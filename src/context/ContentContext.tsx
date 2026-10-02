@@ -10,6 +10,7 @@ import {
   type TimelineEntry,
   type SocialLink,
 } from '../data/profile';
+import importedContent from '../content/portfolio-content.json';
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -56,23 +57,7 @@ interface ContentContextValue {
 // ── Defaults ───────────────────────────────────────────────────────
 
 const DEFAULT_CONTENT: PortfolioContent = {
-  profile: {
-    ...defaultProfile,
-    sysVersion: 'P4.PORTFOLIO',
-    profileImageUrl: '',
-  },
-  projects: defaultProjects.map(p => ({ ...p })),
-  skillCategories: defaultSkillCategories.map(c => ({
-    ...c,
-    skills: c.skills.map(s => ({ ...s, tools: [...s.tools] })),
-  })),
-  timeline: defaultTimeline.map(t => ({ ...t })),
-  socialLinks: defaultSocialLinks.map(l => ({ ...l })),
-  contact: {
-    heading: "LET'S CREATE\nSOMETHING.",
-    subtext: '',
-    footerText: '© 2026 JOHN BENEDICT VILLAMOR',
-  },
+  ...importedContent,
 };
 
 const STORAGE_KEY = 'portfolio-content-v1';
