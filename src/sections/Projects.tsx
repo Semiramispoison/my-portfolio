@@ -11,6 +11,7 @@ const Projects: React.FC = () => {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   
   const [selectedId, setSelectedId] = useState(content.projects[0]?.id || '');
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const selectedProject = content.projects.find(p => p.id === selectedId) || content.projects[0];
 
   useEffect(() => {
@@ -18,6 +19,21 @@ const Projects: React.FC = () => {
       setSelectedId(content.projects[0]?.id || '');
     }
   }, [content.projects, selectedId]);
+
+  const handleProjectSelect = (id: string) => {
+    if (id === selectedId || isTransitioning) return;
+    setIsTransitioning(true);
+    
+    window.dispatchEvent(new Event('triggerProjectTvTransition'));
+    
+    setTimeout(() => {
+      setSelectedId(id);
+    }, 200);
+
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 800);
+  };
 
   const listVariants = {
     hidden: { opacity: 0 },
@@ -60,7 +76,7 @@ const Projects: React.FC = () => {
                 <motion.button
                   key={project.id}
                   className={`${styles.projectItem} ${isSelected ? styles.selected : ''}`}
-                  onClick={() => setSelectedId(project.id)}
+                  onClick={() => handleProjectSelect(project.id)}
                   variants={itemVariants}
                 >
                   {isSelected && (
@@ -81,16 +97,8 @@ const Projects: React.FC = () => {
 
         <div className={styles.detailWrapper}>
           <CRTFrame variant="inner">
-          <AnimatePresence mode="wait">
-            {selectedProject && (
-              <motion.div
-                key={selectedProject.id}
-                className={styles.detailContent}
-                initial={{ opacity: 0, x: 20, skewX: 2 }}
-                animate={{ opacity: 1, x: 0, skewX: 0 }}
-                exit={{ opacity: 0, x: -20, skewX: -2 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] as const }}
-              >
+          {selectedProject && (
+            <div className={styles.detailContent}>
                 <div className={styles.detailHeader}>
                   <div className={styles.detailNumber}>{selectedProject.number}</div>
                   <div className={styles.detailCategory}>{selectedProject.category}</div>
@@ -99,9 +107,17 @@ const Projects: React.FC = () => {
                 <h2 className={styles.detailTitle}>{selectedProject.title}</h2>
 
                 <div className={styles.previewImage}>
-                  <div className={styles.previewPlaceholder}>
-                    NO_VISUAL_DATA
-                  </div>
+                  {selectedProject.imageUrl ? (
+                    <img 
+                      src={selectedProject.imageUrl} 
+                      alt={selectedProject.title} 
+                      className={styles.projectImage} 
+                    />
+                  ) : (
+                    <div className={styles.previewPlaceholder}>
+                      NO_VISUAL_DATA
+                    </div>
+                  )}
                   <div className={styles.scanlineOverlay} />
                 </div>
 
@@ -126,13 +142,34 @@ const Projects: React.FC = () => {
                   ))}
                 </div>
 
-                <button className={styles.actionButton}>
-                  <span className={styles.actionText}>EXECUTE // VIEW</span>
-                  <span className={styles.actionArrow}>↗</span>
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                {(() => {
+  const url = selectedProject.projectUrl;
+  const isValid = url && /^https?:\/\//i.test(url);
+  return isValid ? (
+    <a 
+      href={url} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      className={styles.actionButton}
+      style={{ textDecoration: 'none' }}
+    >
+      <span className={styles.actionText}>EXECUTE // VIEW</span>
+      <span className={styles.actionArrow}>&#x2197;</span>
+    </a>
+  ) : (
+    <button 
+      className={styles.actionButton} 
+      disabled 
+      title={url ? "Invalid URL format (must start with http:// or https://)" : "No URL configured"}
+      style={{ opacity: 0.5, cursor: 'not-allowed' }}
+    >
+      <span className={styles.actionText}>EXECUTE // VIEW</span>
+      <span className={styles.actionArrow}>&#x2197;</span>
+    </button>
+  );
+})()}
+            </div>
+          )}
           </CRTFrame>
         </div>
       </div>
@@ -141,3 +178,8 @@ const Projects: React.FC = () => {
 };
 
 export default Projects;
+
+
+
+
+

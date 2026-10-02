@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useContent, type PortfolioContent } from '../context/ContentContext';
 import type { Project, SkillCategory, TimelineEntry } from '../data/profile';
+import { ImageUploader } from './ImageUploader';
 import styles from './ContentEditor.module.css';
 
 // ── Tabs ───────────────────────────────────────────────────────────
@@ -106,6 +107,10 @@ export const ContentEditor: React.FC = () => {
   const [confirmAction, setConfirmAction] = useState<{ message: string; onConfirm: () => void } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const showConfirm = useCallback((message: string, onConfirm: () => void) => {
+    setConfirmAction({ message, onConfirm });
+  }, []);
+
   const showToast = useCallback((message: string, type: 'success' | 'error' = 'success') => {
     setToast({ message, type });
   }, []);
@@ -183,6 +188,12 @@ export const ContentEditor: React.FC = () => {
         <label className={styles.fieldLabel}>SYS.VER LABEL</label>
         <input className={styles.fieldInput} value={content.profile.sysVersion} onChange={e => set('profile.sysVersion', e.target.value)} />
       </div>
+      <ImageUploader 
+        label="TV MAIN VISUAL" 
+        value={content.profile.heroImageUrl || ''} 
+        onChange={val => set('profile.heroImageUrl', val)} 
+        aspectRatioText="(16:9 RECOMMENDED)"
+      />
     </div>
   );
 
@@ -193,10 +204,11 @@ export const ContentEditor: React.FC = () => {
         <label className={styles.fieldLabel}>NAME</label>
         <input className={styles.fieldInput} value={content.profile.name} onChange={e => set('profile.name', e.target.value)} />
       </div>
-      <div className={styles.field}>
-        <label className={styles.fieldLabel}>PROFILE IMAGE URL</label>
-        <input className={styles.fieldInput} value={content.profile.profileImageUrl} onChange={e => set('profile.profileImageUrl', e.target.value)} placeholder="https://..." />
-      </div>
+      <ImageUploader 
+        label="PROFILE IMAGE" 
+        value={content.profile.profileImageUrl || ''} 
+        onChange={val => set('profile.profileImageUrl', val)} 
+      />
 
       <div className={styles.sectionTitle}>// BIOGRAPHY_DATA</div>
       {content.profile.bio.map((para, idx) => (
@@ -371,6 +383,28 @@ export const ContentEditor: React.FC = () => {
               });
             }} placeholder="#HEXCODE" />
           </div>
+          <div className={styles.field}>
+            <label className={styles.fieldLabel}>PROJECT URL (EXECUTE BUTTON)</label>
+            <input className={styles.fieldInput} value={project.projectUrl || ''} onChange={e => {
+              updateContent(prev => {
+                const ps = [...prev.projects];
+                ps[idx] = { ...ps[idx], projectUrl: e.target.value };
+                return { ...prev, projects: ps };
+              });
+            }} placeholder="https://..." />
+          </div>
+          <ImageUploader 
+            label="PROJECT IMAGE" 
+            value={project.imageUrl || ''} 
+            onChange={val => {
+              updateContent(prev => {
+                const ps = [...prev.projects];
+                ps[idx] = { ...ps[idx], imageUrl: val };
+                return { ...prev, projects: ps };
+              });
+            }}
+            aspectRatioText="(16:9 RECOMMENDED)"
+          />
         </div>
       ))}
       <button className={styles.addItemBtn} onClick={() => {
@@ -651,13 +685,6 @@ export const ContentEditor: React.FC = () => {
 
   return (
     <>
-      {/* Floating Edit Button */}
-      {!isEditMode && (
-        <button className={styles.editFab} onClick={() => setEditMode(true)}>
-          ✎ EDIT CONTENT
-        </button>
-      )}
-
       {/* Editor Panel */}
       <AnimatePresence>
         {isEditMode && (
@@ -667,37 +694,46 @@ export const ContentEditor: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={handleCancel}
+              onClick={() => {
+                if (hasUnsavedChanges) {
+                  showConfirm('Discard unsaved changes?', () => setEditMode(false));
+                } else {
+                  setEditMode(false);
+                }
+              }}
             />
             <motion.div
               className={styles.panel}
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             >
-              {/* Header */}
               <div className={styles.header}>
-                <span className={styles.headerTitle}>// CONTENT_EDITOR</span>
-                <button className={styles.closeBtn} onClick={handleCancel}>✕ CLOSE</button>
+                <div className={styles.headerTitle}>SYSTEM CONFIG // {activeTab}</div>
+                <div className={styles.headerActions}>
+                  {hasUnsavedChanges && (
+                    <button className={styles.saveBtn} onClick={() => { saveChanges(); showToast('CHANGES SAVED'); }}>
+                      SAVE
+                    </button>
+                  )}
+                  <button className={styles.closeBtn} onClick={() => {
+                    if (hasUnsavedChanges) {
+                      showConfirm('Discard unsaved changes?', () => setEditMode(false));
+                    } else {
+                      setEditMode(false);
+                    }
+                  }}>
+                    CLOSE
+                  </button>
+                </div>
               </div>
 
-              {/* Toolbar */}
-              <div className={styles.toolbar}>
-                <button className={styles.saveBtn} onClick={handleSave}>SAVE</button>
-                <button className={styles.cancelBtn} onClick={handleCancel}>CANCEL</button>
-                <button className={styles.resetBtn} onClick={handleReset}>RESET</button>
-                <button className={styles.exportBtn} onClick={exportContent}>EXPORT</button>
-                <button className={styles.importBtn} onClick={handleImport}>IMPORT</button>
-                {hasUnsavedChanges && <span className={styles.unsavedBadge}>UNSAVED</span>}
-              </div>
-
-              {/* Tabs */}
               <div className={styles.tabs}>
                 {TABS.map(tab => (
                   <button
                     key={tab}
-                    className={activeTab === tab ? styles.tabActive : styles.tab}
+                    className={`${styles.tab} ${activeTab === tab ? styles.activeTab : ''}`}
                     onClick={() => setActiveTab(tab)}
                   >
                     {tab}
@@ -705,31 +741,67 @@ export const ContentEditor: React.FC = () => {
                 ))}
               </div>
 
-              {/* Tab Content */}
-              {renderTab()}
+              <div className={styles.content}>
+                {renderTab()}
+              </div>
 
-              {/* Hidden file input for import */}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json"
-                className={styles.hiddenInput}
-                onChange={handleFileChange}
-              />
+              <div className={styles.footer}>
+                <button className={styles.dangerBtn} onClick={() => {
+                  showConfirm('Reset all content to original defaults? This cannot be undone.', () => {
+                    resetToDefaults();
+                    showToast('RESET TO DEFAULTS');
+                  });
+                }}>
+                  RESET DEFAULTS
+                </button>
+                <div style={{display: 'flex', gap: '8px'}}>
+                  <button className={styles.utilityBtn} onClick={() => {
+                    exportContent();
+                    showToast('CONTENT EXPORTED');
+                  }}>
+                    EXPORT
+                  </button>
+                  <button className={styles.utilityBtn} onClick={() => fileInputRef.current?.click()}>
+                    IMPORT
+                  </button>
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    style={{display: 'none'}} 
+                    accept="application/json"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        try {
+                          const json = event.target?.result as string;
+                          importContent(json);
+                          showToast('CONTENT IMPORTED');
+                        } catch (err) {
+                          showToast('IMPORT FAILED: INVALID FILE', 'error');
+                        }
+                      };
+                      reader.readAsText(file);
+                      e.target.value = '';
+                    }}
+                  />
+                </div>
+              </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* Toast */}
-      {toast && <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} />}
+      <AnimatePresence>
+        {toast && <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} />}
+      </AnimatePresence>
 
-      {/* Confirm Dialog */}
       {confirmAction && (
-        <ConfirmDialog
-          message={confirmAction.message}
-          onConfirm={confirmAction.onConfirm}
-          onCancel={() => setConfirmAction(null)}
+        <ConfirmDialog 
+          message={confirmAction.message} 
+          onConfirm={() => { confirmAction.onConfirm(); setConfirmAction(null); }} 
+          onCancel={() => setConfirmAction(null)} 
         />
       )}
     </>
@@ -737,3 +809,4 @@ export const ContentEditor: React.FC = () => {
 };
 
 export default ContentEditor;
+

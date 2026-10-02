@@ -1,4 +1,4 @@
-﻿/* Menu Trigger / Hamburger */
+/* Menu Trigger / Hamburger */
 .menuTrigger {
   position: fixed;
   top: 3rem;
@@ -22,7 +22,7 @@
 .triggerData {
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  color: #000;
+  color: #FFF;
   letter-spacing: 2px;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
@@ -33,14 +33,14 @@
   font-family: 'Inter', sans-serif;
   font-weight: 900;
   font-size: 1.2rem;
-  color: #000;
+  color: #FFF;
   letter-spacing: 2px;
   transition: color 0.3s ease;
   text-shadow: none;
 }
 
 .menuTrigger:hover .triggerLabel {
-  color: #000;
+  color: #FFF;
 }
 
 .hamburger {
@@ -53,7 +53,7 @@
 .hamburger span {
   display: block;
   height: 4px;
-  background-color: #000;
+  background-color: #FFF;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
 }
@@ -63,13 +63,13 @@
 .line3 { width: 60%; }
 
 .menuTrigger:hover .hamburger span {
-  background-color: #000;
+  background-color: #FFF;
   width: 100%;
 }
 
 /* Open State Trigger */
 .triggerOpen .hamburger span {
-  background-color: #000;
+  background-color: #FFF;
   box-shadow: none;
 }
 .triggerOpen .line1 {
@@ -84,10 +84,10 @@
   width: 100%;
 }
 .triggerOpen .triggerLabel {
-  color: #000;
+  color: #FFF;
 }
 .triggerOpen .triggerData {
-  color: #000;
+  color: #FFF;
 }
 
 /* Full Screen Overlay */
@@ -191,7 +191,7 @@
 .number {
   font-weight: 900;
   font-size: 2rem;
-  color: #000;
+  color: #FFF;
   font-family: var(--font-mono);
   font-style: italic;
   opacity: 0.5;
@@ -213,7 +213,7 @@
 /* Hover & Active states */
 .navItemWrapper:hover .label,
 .navButton:focus-visible .label {
-  color: #000;
+  color: #FFF;
   text-shadow: 4px 4px 0px rgba(255, 204, 0, 0.3);
 }
 
@@ -302,4 +302,136 @@
   .contextualText {
     display: none;
   }
+}
+
+
+.editContentWrapper {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .editContentWrapper {
+    bottom: 20px;
+    left: 20px;
+  }
+}
+
+.editMenuBtn {
+  background: transparent;
+  color: #FFCC00;
+  border: 1px solid #FFCC00;
+  padding: 8px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.editMenuBtn:hover {
+  background: #FFCC00;
+  color: #000;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalContent {
+  background: #0A1628;
+  border: 1px solid var(--accent-primary);
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  border-radius: 4px;
+}
+
+.modalHeading {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: #FFF;
+  margin: 0 0 8px 0;
+}
+
+.modalText {
+  font-family: 'Inter', sans-serif;
+  color: #8899B4;
+  font-size: 0.875rem;
+  margin: 0 0 24px 0;
+}
+
+.passwordInput {
+  width: 100%;
+  background: #050A18;
+  border: 1px solid #4A5A74;
+  color: #FFF;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 12px;
+  margin-bottom: 16px;
+  border-radius: 2px;
+  outline: none;
+}
+
+.passwordInput:focus {
+  border-color: var(--accent-primary);
+}
+
+.passwordError {
+  color: var(--accent-secondary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
+.modalActions {
+  display: flex;
+  gap: 12px;
+}
+
+.primaryBtn {
+  flex: 1;
+  background: var(--accent-primary);
+  color: #FFF;
+  border: none;
+  padding: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.primaryBtn:hover {
+  background: #1A60D0;
+}
+
+.secondaryBtn {
+  flex: 1;
+  background: transparent;
+  color: #8899B4;
+  border: 1px solid #4A5A74;
+  padding: 12px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.secondaryBtn:hover {
+  color: #FFF;
+  border-color: #FFF;
 }

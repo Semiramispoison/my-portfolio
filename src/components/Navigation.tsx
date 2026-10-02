@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useContent } from '../context/ContentContext';
 import styles from './Navigation.module.css';
 
 interface Section {
@@ -13,6 +14,36 @@ interface NavigationProps {
 }
 
 export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
+  const { setEditMode } = useContent();
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showPasswordPrompt) {
+        setShowPasswordPrompt(false);
+        setPassword('');
+        setPasswordError('');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showPasswordPrompt]);
+
+  const handlePasswordSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (password === 'persona') {
+      setShowPasswordPrompt(false);
+      setIsOpen(false);
+      setEditMode(true);
+      setPassword('');
+      setPasswordError('');
+    } else {
+      setPasswordError('ACCESS DENIED: INVALID PASSWORD');
+      setPassword('');
+    }
+  };
   const [activeSection, setActiveSection] = useState<string>(sections[0]?.id || '');
   const [hoveredSection, setHoveredSection] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -53,19 +84,23 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
 
   const handleSelect = (id: string) => {
     setIsTransitioning(true);
-    setActiveSection(id);
+    setIsOpen(false);
+    
+    if (id === 'home') {
+      const event = new CustomEvent('triggerTvTransition', { detail: { targetId: id } });
+      window.dispatchEvent(event);
+    } else {
+      const event = new CustomEvent('triggerInnerTvTransition', { detail: { targetId: id } });
+      window.dispatchEvent(event);
+    }
     
     setTimeout(() => {
-      setIsOpen(false);
-      
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
-        }
-        setIsTransitioning(false);
-      }, 400); 
-    }, 600); 
+      setActiveSection(id);
+    }, 200);
+
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 800);
   };
 
   const menuStyles = [
@@ -176,8 +211,56 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
                   </motion.li>
                 );
               })}
-            </ul>
+                        </ul>
+            <motion.div 
+              className={styles.editContentWrapper}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.4 }}
+            >
+              <button 
+                className={styles.editMenuBtn} 
+                onClick={() => {
+                  setShowPasswordPrompt(true);
+                  setPasswordError('');
+                  setPassword('');
+                }}
+              >
+                EDIT CONTENT
+              </button>
+            </motion.div>
           </motion.nav>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showPasswordPrompt && (
+          <div className={styles.modalOverlay} onClick={() => setShowPasswordPrompt(false)}>
+            <motion.div 
+              className={styles.modalContent}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className={styles.modalHeading}>EDITOR ACCESS</h3>
+              <p className={styles.modalText}>Enter your password to access content editing.</p>
+              <form onSubmit={handlePasswordSubmit}>
+                <input 
+                  type="password" 
+                  className={styles.passwordInput}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoFocus
+                />
+                {passwordError && <div className={styles.passwordError}>{passwordError}</div>}
+                <div className={styles.modalActions}>
+                  <button type="submit" className={styles.primaryBtn}>UNLOCK EDITOR</button>
+                  <button type="button" className={styles.secondaryBtn} onClick={() => setShowPasswordPrompt(false)}>CANCEL</button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </>
@@ -185,3 +268,16 @@ export const Navigation: React.FC<NavigationProps> = ({ sections }) => {
 };
 
 export default Navigation;
+
+
+
+
+
+
+
+
+
+
+
+
+

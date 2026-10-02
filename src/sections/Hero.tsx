@@ -15,9 +15,14 @@ export const Hero: React.FC = () => {
   // Interaction State
   const [interactionState, setInteractionState] = useState<'idle' | 'flashing' | 'tunnel' | 'revealed'>('idle');
 
-  const handleTvClick = () => {
+  const triggerTransition = (targetId: string, jumpToHomeFirst: boolean) => {
     if (interactionState !== 'idle') return;
-    
+
+    if (jumpToHomeFirst) {
+      const homeSection = document.getElementById('home');
+      if (homeSection) homeSection.scrollIntoView({ behavior: 'auto' });
+    }
+
     // PHASE 1: 0ms-120ms - Static intensifies
     setInteractionState('flashing');
     
@@ -31,11 +36,11 @@ export const Hero: React.FC = () => {
       setInteractionState('revealed');
     }, 550);
 
-    // PHASE 4: 750ms+ - Navigate to profile
+    // PHASE 4: 750ms+ - Navigate to destination
     setTimeout(() => {
-      const aboutSection = document.getElementById('about');
-      if (aboutSection) {
-        aboutSection.scrollIntoView({ behavior: 'smooth' });
+      const destSection = document.getElementById(targetId);
+      if (destSection) {
+        destSection.scrollIntoView({ behavior: 'smooth' });
       }
       
       // Reset state silently after transition ends
@@ -44,6 +49,27 @@ export const Hero: React.FC = () => {
       }, 1000);
     }, 750);
   };
+
+  const handleTvClick = () => {
+    triggerTransition('about', false);
+  };
+
+  React.useEffect(() => {
+    const handleNavEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ targetId: string }>;
+      triggerTransition(customEvent.detail.targetId, true);
+    };
+    window.addEventListener('triggerTvTransition', handleNavEvent);
+    return () => window.removeEventListener('triggerTvTransition', handleNavEvent);
+  }, [interactionState]);
+  React.useEffect(() => {
+    const handleNavEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ targetId: string }>;
+      triggerTransition(customEvent.detail.targetId, true);
+    };
+    window.addEventListener('triggerTvTransition', handleNavEvent);
+    return () => window.removeEventListener('triggerTvTransition', handleNavEvent);
+  }, [interactionState]);
 
   return (
     <section id="home" className={styles.heroSection}>
@@ -138,7 +164,15 @@ export const Hero: React.FC = () => {
                       animate={{ opacity: 1, scale: 1, filter: 'brightness(1)' }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
                     >
-                      <FaUserAlt className={styles.portraitIcon} />
+                      {content.profile.heroImageUrl ? (
+                        <img 
+                          src={content.profile.heroImageUrl} 
+                          alt="TV Reveal" 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        />
+                      ) : (
+                        <FaUserAlt className={styles.portraitIcon} />
+                      )}
                     </motion.div>
                   )}
 
@@ -210,3 +244,6 @@ export const Hero: React.FC = () => {
 };
 
 export default Hero;
+
+
+

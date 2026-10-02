@@ -24,6 +24,7 @@ export interface ProfileData {
   skills: { name: string; level: number }[];
   sysVersion: string;
   profileImageUrl: string;
+  heroImageUrl?: string;
 }
 
 export interface ContactData {

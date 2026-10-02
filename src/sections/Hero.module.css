@@ -389,12 +389,7 @@
   filter: brightness(1.2);
 }
 
-.staticLayer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
+.staticLayer { position: absolute; inset: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 
 .tunnelContainer {
   position: absolute;
@@ -435,3 +430,13 @@
   opacity: 0.8;
   filter: drop-shadow(0 0 10px rgba(255, 204, 0, 0.5));
 }
+.tvImageContainer { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+
+.tvImageContainer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+

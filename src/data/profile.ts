@@ -10,6 +10,8 @@ export interface Project {
   process?: string;
   result?: string;
   accent: string;
+  imageUrl?: string;
+  projectUrl?: string;
 }
 
 export interface Skill {
