@@ -1,0 +1,38 @@
+﻿.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform-origin: center;
+}
+
+.inner {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--accent-primary, #2B7FFF);
+  transform: rotate(45deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: border-color 0.3s ease;
+  background-color: rgba(5, 10, 24, 0.1);
+  backdrop-filter: blur(2px);
+}
+
+.hovering .inner {
+  border-color: var(--accent-yellow, #00D4FF);
+  background-color: rgba(0, 212, 255, 0.1);
+}
+
+.text {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.5rem;
+  font-weight: 700;
+  color: var(--text-primary, #F0F4FA);
+  transform: rotate(-45deg);
+  letter-spacing: 0.1em;
+}

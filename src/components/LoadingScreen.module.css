@@ -1,0 +1,134 @@
+﻿.container {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-primary, #050A18);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.reducedMotionContainer {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-primary, #050A18);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-primary, #F0F4FA);
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 800px;
+  padding: 0 2rem;
+  z-index: 2;
+}
+
+.textContainer {
+  margin-bottom: 3rem;
+}
+
+.label {
+  color: var(--accent-primary, #2B7FFF);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  color: var(--text-primary, #F0F4FA);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.progressContainer {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.counter {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent-yellow, #00D4FF);
+  font-size: 1.5rem;
+  font-weight: 400;
+  min-width: 2.5rem;
+}
+
+.barTrack {
+  flex: 1;
+  height: 2px;
+  background-color: var(--bg-elevated, #0D1D35);
+  position: relative;
+  overflow: hidden;
+}
+
+.barFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: var(--accent-yellow, #00D4FF);
+}
+
+.readyText {
+  position: absolute;
+  bottom: -4rem;
+  color: var(--accent-secondary, #FF3B7A);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.wipeContainer {
+  position: fixed;
+  inset: -20%;
+  z-index: 10000;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transform: skewY(-12deg);
+}
+
+.wipePanel1, .wipePanel2, .wipePanel3 {
+  position: absolute;
+  width: 200%;
+  height: 150vh;
+  left: -50%;
+  top: -25vh;
+}
+
+.wipePanel1 {
+  background-color: var(--accent-primary, #2B7FFF);
+  z-index: 1;
+}
+
+.wipePanel2 {
+  background-color: var(--accent-yellow, #00D4FF);
+  z-index: 2;
+}
+
+.wipePanel3 {
+  background-color: var(--bg-primary, #050A18);
+  z-index: 3;
+}

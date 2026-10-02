@@ -1,0 +1,182 @@
+.section {
+  position: relative;
+  padding: 120px 24px;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  margin-top: 64px;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.card {
+  background-color: #080808;
+  padding: 32px;
+  position: relative;
+  border: 4px solid var(--accent-primary);
+  border-radius: 12px;
+  box-shadow: inset 0 0 30px rgba(0,0,0,1);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #000; background: transparent; padding: 10px;
+}
+
+.categoryTitle {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #FFF;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.paramLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent-primary);
+  letter-spacing: 0.05em;
+}
+
+.skillList {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.skillItem {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skillHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.skillName {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #FFF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.skillLevel {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: 1.25rem;
+  color: var(--accent-primary);
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.lvLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: #FFF;
+  font-weight: 400;
+}
+
+.barTrack {
+  height: 12px;
+  width: 100%;
+  background-color: #111;
+  border: 2px solid #000;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 5px rgba(0,0,0,1);
+}
+
+.barFill {
+  height: 100%;
+  background: var(--accent-primary);
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.skillDesc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: #FFF;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.toolLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--accent-primary);
+  background-color: rgba(255,204,0, 0.1);
+  padding: 4px 8px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.bgDiagonal {
+  position: absolute;
+  top: 0;
+  right: -20%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.03), transparent);
+  transform: rotate(-12deg);
+  z-index: 1;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .barFill {
+    transition: none !important;
+  }
+}
+
+.bgTypography {
+  position: absolute;
+  top: 10%;
+  right: -5%;
+  font-family: 'Anton', 'Inter', sans-serif;
+  font-size: 25vw;
+  font-weight: 900;
+  color: var(--accent-primary);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  transform: rotate(-5deg);
+}
